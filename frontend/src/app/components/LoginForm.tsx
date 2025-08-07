@@ -17,7 +17,7 @@ export default function LoginForm() {
             localStorage.setItem('loggedInUser', username)
             router.push('/todos')
         } else {
-            alert('ユーザー名とパスワードを入力してください')
+            alert('正しいユーザー名とパスワードを入力してください')
         }
     }
 
@@ -33,7 +33,7 @@ export default function LoginForm() {
                 className={styles.input}
             />
             <input 
-                type="text"
+                type="password"
                 placeholder='パスワード'
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}

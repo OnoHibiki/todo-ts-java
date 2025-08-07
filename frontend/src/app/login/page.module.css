@@ -1,0 +1,12 @@
+.loginPage {
+    
+    padding-top: 5rem;         /* 全体的に下にする */
+}
+
+
+
+/* タイトル */
+.appName {
+    text-align: center;
+    margin-bottom: 2rem;      /* ログインフォームとの距離を開ける */
+} 
