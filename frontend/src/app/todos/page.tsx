@@ -30,12 +30,12 @@ export default function TodosPage() {
     }
 
 
-    const toggleTodo = (IdleDeadline: number) => {
+    const toggleTodo = (id: number) => {
         setTodos(prev => prev.map(t => (t.id === id ? { ...t, completed: !t.completed } : t )))
     }
 
     //Todo削除
-    const deleteTodo = {id: number} => {
+    const deleteTodo = (id: number) => {
         setTodos(prev => prev.filter(t => t.id !== id))
     }
 
