@@ -66,7 +66,12 @@ export default function TodosPage() {
             </header>
             
             <div className={styles.inputRow}>
-
+                <input
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="やることを入力"
+                    className={styles.input}
+                />
                 <input 
                     type="date" 
                     value={deadlineInput}
@@ -74,12 +79,7 @@ export default function TodosPage() {
                     min={todayStr}
                     className={styles.dateInput}
                 />
-                <input
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    placeholder="やることを入力"
-                    className={styles.input}
-                />
+
                 <button className={styles.addBtn} onClick={addTodo}>追加</button>
 
             </div>
