@@ -63,9 +63,9 @@
     padding: 8px 0;
 }
 
-.text{
+/* .text{ */
     /* 完了済みに打ち消し線を当てる場合、.completedと組み合わせる */
-}
+/* } */
 
 .completed {
     text-decoration: line-through;

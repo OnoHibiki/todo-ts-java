@@ -5,15 +5,19 @@ import { useRouter } from 'next/navigation'
 import styles from './Todos.module.css'
 
 //Todoの型
-type Todo = { id: number; title: string; completed: boolean }
+type Todo = { id: number; title: string; deadline:Date; completed: boolean }
 
 export default function TodosPage() {
     const router = useRouter()
     const [todos, setTodos] = useState<Todo[]>([
-        { id: 1, title: '（サンプル）牛乳を買う' , completed: false },
-        { id: 2, title: '（サンプル）本を読む' , completed: true },
+        { id: 1, title: '（サンプル）牛乳を買う' , deadline: new Date() , completed: false },
+        { id: 2, title: '（サンプル）本を読む' , deadline: new Date() , completed: true },
     ])
+
+
     const [input, setInput] = useState('')
+    const [deadlineInput, setdeadlineInput] = useState('')
+
 
     //未ログインなら、/login（ログイン画面)へ戻す
     useEffect(() => {
@@ -25,8 +29,14 @@ export default function TodosPage() {
     const addTodo = () => {
         const title = input.trim()
         if(!title) return
-        setTodos(prev => [...prev, { id: Date.now(), title, completed: false }])
+        
+        //締切日設定用
+        const deadline = deadlineInput ? new Date(deadlineInput) : new Date()
+
+        setTodos(prev => [...prev, { id: Date.now(), title, deadline, completed: false }])
         setInput('')
+        setdeadlineInput('')
+    
     }
 
     //Todo完了状態管理
@@ -44,6 +54,9 @@ export default function TodosPage() {
         router.replace('/login')
     }
 
+    const todayStr = new Date().toISOString().slice(0,10)
+    const formatDate = (d: Date) => new Date(d).toLocaleDateString('ja-JP')
+
 
     return(
         <div className={styles.container}>
@@ -51,8 +64,16 @@ export default function TodosPage() {
                 <h1 className={styles.title}>ToDo</h1>
                 <button className={styles.logoutBtn} onClick={logout}>ログアウト</button>
             </header>
-
+            
             <div className={styles.inputRow}>
+
+                <input 
+                    type="date" 
+                    value={deadlineInput}
+                    onChange={(e) => setdeadlineInput(e.target.value)}
+                    min={todayStr}
+                    className={styles.dateInput}
+                />
                 <input
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
@@ -60,6 +81,7 @@ export default function TodosPage() {
                     className={styles.input}
                 />
                 <button className={styles.addBtn} onClick={addTodo}>追加</button>
+
             </div>
 
             <ul className={styles.list}>
@@ -69,6 +91,7 @@ export default function TodosPage() {
                         <span className={`${styles.text} ${t.completed ? styles.completed : ''}`}>
                             {t.title}
                         </span>
+                        <span className={styles.deadline}>期限: {formatDate(t.deadline)}</span>
                         <button className={styles.deleteBtn} onClick={() => deleteTodo(t.id)}>削除</button>
                     </li>
                 ))}
