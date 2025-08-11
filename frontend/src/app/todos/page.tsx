@@ -29,7 +29,7 @@ export default function TodosPage() {
         setInput('')
     }
 
-
+    //Todo完了状態管理
     const toggleTodo = (id: number) => {
         setTodos(prev => prev.map(t => (t.id === id ? { ...t, completed: !t.completed } : t )))
     }
