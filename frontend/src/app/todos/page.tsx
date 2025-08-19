@@ -72,13 +72,16 @@ export default function TodosPage() {
                     placeholder="やることを入力"
                     className={styles.input}
                 />
-                <input 
-                    type="date" 
-                    value={deadlineInput}
-                    onChange={(e) => setdeadlineInput(e.target.value)}
-                    min={todayStr}
-                    className={styles.dateInput}
-                />
+                <label className={styles.dateLabel} htmlFor="deadline">
+                    締切日
+                    <input 
+                        type="date" 
+                        value={deadlineInput}
+                        onChange={(e) => setdeadlineInput(e.target.value)}
+                        min={todayStr}
+                        className={styles.dateInput}
+                    />
+                </label>
 
                 <button className={styles.addBtn} onClick={addTodo}>追加</button>
 

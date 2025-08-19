@@ -26,10 +26,23 @@
 }
 .logoutBtn:hover { background: #f4f4f4; }
 
+
 .inputRow {
     display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
+    align-items: center;
+}
+
+.input,
+.dateInput {
+    box-sizing: border-box;
+    min-height: 40px;
+    padding: 8px 12px;
+    font-size: 16px;
+}
+
+.dateLabel{
+    margin-left:1rem ;
+    align-items: right;
 }
 
 
@@ -47,6 +60,8 @@
     background: #0070f3;
     color: #fff;
     cursor: pointer;
+    align-items: right;
+    
 }
 .addBtn:hover { background:  #005ac1;}
 
