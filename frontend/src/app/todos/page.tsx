@@ -22,7 +22,21 @@ export default function TodosPage() {
     //未ログインなら、/login（ログイン画面)へ戻す
     useEffect(() => {
         const user = typeof window !== 'undefined' ? localStorage.getItem('loggedInUser') : null 
-        if (!user) router.replace('/login')
+        if (!user) {
+            router.replace('/login')
+            return
+        }
+
+        (async () =>{
+            try {
+                const res = await fetch('http://localhost:8080/api/todos')
+                const data = await res.json()
+                //Spring Api側のプロパティ名に合わせる
+                setTodos(data)
+            } catch (e) {
+                console.error('fetch（Todoの取得)に失敗しました', e)
+            }
+        })()
     },[router])
 
     //Todo追加
