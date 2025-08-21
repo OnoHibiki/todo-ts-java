@@ -9,10 +9,7 @@ type Todo = { id: number; title: string; deadline:Date; completed: boolean }
 
 export default function TodosPage() {
     const router = useRouter()
-    const [todos, setTodos] = useState<Todo[]>([
-        { id: 1, title: '（サンプル）牛乳を買う' , deadline: new Date() , completed: false },
-        { id: 2, title: '（サンプル）本を読む' , deadline: new Date() , completed: true },
-    ])
+    const [todos, setTodos] = useState<Todo[]>([])
 
 
     const [input, setInput] = useState('')
