@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import styles from './Todos.module.css'
-import { headers } from 'next/headers'
 
 //Todoの型
 type Todo = { id: number; title: string; deadline:Date; completed: boolean }
@@ -68,7 +67,7 @@ export default function TodosPage() {
 
             //エラー処理
             if(!res.ok){
-                throw new Error ('HTTP ${res.status}')
+                throw new Error (`HTTP ${res.status}`)
             }
 
             const created = await res.json()
@@ -80,8 +79,8 @@ export default function TodosPage() {
             }
 
             setTodos(prev => [...prev, createdForUi])
-            setInput(' ')
-            setdeadlineInput(' ')
+            setInput('')
+            setdeadlineInput('')
 
         } catch (e){
             //エラー処理
@@ -133,7 +132,13 @@ export default function TodosPage() {
                     />
                 </label>
 
-                <button className={styles.addBtn} onClick={addTodo}>追加</button>
+                <button 
+                    className={styles.addBtn} 
+                    onClick={addTodo}
+                    disabled={input.trim() === ''}//タイトル欄が空欄の場合は、追加ボタンを非活性化
+                >
+                    追加
+                </button>
 
             </div>
 
