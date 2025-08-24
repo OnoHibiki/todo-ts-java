@@ -88,14 +88,32 @@ export default function TodosPage() {
         }
     }
 
-    //Todo完了状態管理
-    const toggleTodo = (id: number) => {
-        setTodos(prev => prev.map(t => (t.id === id ? { ...t, completed: !t.completed } : t )))
+    //Todo完了状態管理（API連携)
+    const toggleTodo = async (id: number) => {
+        try {
+            const res = await fetch(`http://localhost:8080/api/todos/${id}/toggle`, {method: 'PUT'})
+            if (!res.ok) {
+                throw new Error (`HTTP ${res.status}`)
+            }
+            const updated = await res.json()
+            setTodos(prev => prev.map(t => (t.id === id ? { ...t, completed: Boolean(updated.completed) } : t )))
+        } catch (e) {
+            console.error('Todoの更新（完了切替)に失敗しました', e)
+        }
     }
 
-    //Todo削除
-    const deleteTodo = (id: number) => {
-        setTodos(prev => prev.filter(t => t.id !== id))
+
+    //Todo削除(API連携)
+    const deleteTodo = async (id: number) => {
+        try {
+            const res = await fetch(`http://localhost:8080/api/todos/${id}`, {method : 'DELETE'})
+            if (!res.ok) {
+                throw new Error(`HTTP ${res.status}`)
+                setTodos(prev => prev.filter(t => t.id !== id))
+            }
+        } catch (e) {
+            console.error('Todoの削除に失敗しました' , e)
+        }
     }
 
     const logout = () => {

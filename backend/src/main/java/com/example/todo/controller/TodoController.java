@@ -9,6 +9,9 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 
 
 @RestController
@@ -30,7 +33,7 @@ public class TodoController {
     }
 
 
-    //Post時に実行されるメソッド
+    //Todo作成
     @PostMapping
     public TodoDto create(@RequestBody CreateTodoReq req) {
         LocalDate deadline = (req.deadline() != null) ? req.deadline() : LocalDate.now();
@@ -40,11 +43,32 @@ public class TodoController {
             deadline,
             req.completed() != null ? req.completed() : false
         );
-    store.add(created);
-    return created;    
+        store.add(created);
+        return created;    
     }
     
+    //Todo削除
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        boolean removed = store.removeIf(t -> t.id().equals(id));
+        if(!removed) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Todoが既に存在しません");
+        }
+    }
 
+    //Todoの完了管理
+    @PutMapping("/{id}/toggle")
+    public TodoDto toggle(@PathVariable Long id) {
+        for (int i = 0; i < store.size(); i++){
+            TodoDto t = store.get(i);
+            if (t.id().equals(id)) {
+                TodoDto updated = new TodoDto(t.id(), t.title(), t.deadline(), !t.completed());
+                store.set(i, updated);
+                return updated;
+            }
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Todoが存在しません");
+    }
 
 
     //recordクラスを使用
