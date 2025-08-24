@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import styles from './Todos.module.css'
+import { headers } from 'next/headers'
 
 //Todoの型
 type Todo = { id: number; title: string; deadline:Date; completed: boolean }
@@ -28,8 +29,15 @@ export default function TodosPage() {
             try {
                 const res = await fetch('http://localhost:8080/api/todos')
                 const data = await res.json()
-                //Spring Api側のプロパティ名に合わせる
-                setTodos(data)
+
+                //POST時の処理
+                //Spring ApiのdeadLineをDateに変換してからstateへ。
+                setTodos((data as any[]).map(d => ({
+                    id: d.id as number,
+                    title: d.title as string,
+                    deadline: new Date(d.deadline as string),
+                    completed: d.completed as boolean,
+                })))
             } catch (e) {
                 console.error('fetch（Todoの取得)に失敗しました', e)
             }
@@ -37,17 +45,48 @@ export default function TodosPage() {
     },[router])
 
     //Todo追加
-    const addTodo = () => {
+    const addTodo = async () => {
         const title = input.trim()
-        if(!title) return
         
-        //締切日設定用
-        const deadline = deadlineInput ? new Date(deadlineInput) : new Date()
+        if (!title) {
+            return;
+        }
 
-        setTodos(prev => [...prev, { id: Date.now(), title, deadline, completed: false }])
-        setInput('')
-        setdeadlineInput('')
-    
+        try{
+            const body = {
+                title,
+                deadline: deadlineInput || undefined,
+                completed: false,
+            }
+
+            //POST時,Jsonで返す
+            const res = await fetch('http://localhost:8080/api/todos',{
+                method: 'POST',
+                headers:{ 'Content-Type' : 'application/json' },
+                body: JSON.stringify(body),
+            })
+
+            //エラー処理
+            if(!res.ok){
+                throw new Error ('HTTP ${res.status}')
+            }
+
+            const created = await res.json()
+            const createdForUi: Todo = {
+                id: created.id as number,
+                title: created.title as string,
+                deadline: new Date(created.deadline as string),
+                completed: created.completed as boolean,
+            }
+
+            setTodos(prev => [...prev, createdForUi])
+            setInput(' ')
+            setdeadlineInput(' ')
+
+        } catch (e){
+            //エラー処理
+            console.error('Todoの作成に失敗しました' , e)
+        }
     }
 
     //Todo完了状態管理
